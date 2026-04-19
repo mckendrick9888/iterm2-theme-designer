@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>iTerm2 Theme Designer</title>
+  <meta name="cf-web-analytics-token" content="">
   <style>
     :root {
       --bg-app: #0f1115;
@@ -331,6 +332,22 @@
   </div>
 
   <script>
+    const cloudflareAnalyticsToken = document
+      .querySelector('meta[name="cf-web-analytics-token"]')
+      ?.getAttribute("content")
+      ?.trim();
+
+    if (cloudflareAnalyticsToken) {
+      const beacon = document.createElement("script");
+      beacon.defer = true;
+      beacon.src = "https://static.cloudflareinsights.com/beacon.min.js";
+      beacon.setAttribute(
+        "data-cf-beacon",
+        JSON.stringify({ token: cloudflareAnalyticsToken })
+      );
+      document.head.appendChild(beacon);
+    }
+
     const colorFields = [
       { key: "Background Color", label: "Background", desc: "Main terminal background" },
       { key: "Foreground Color", label: "Foreground", desc: "Default text color" },

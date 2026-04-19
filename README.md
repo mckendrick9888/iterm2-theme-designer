@@ -8,6 +8,40 @@ Live URL: https://iterm2-theme-designer.mckendrick9888.workers.dev/
 
 ![iTerm2 Theme Designer screenshot](./assets/iterm2-theme-designer.png)
 
+## Analytics
+
+This project is prepared for Cloudflare Web Analytics.
+
+There are two supported ways to enable it:
+
+1. Cloudflare dashboard automatic setup
+2. Manual beacon setup with a site token
+
+### Automatic setup on Cloudflare Pages
+
+Cloudflare documents a one-click path for Pages projects:
+
+1. Open `Workers & Pages`
+2. Select the project
+3. Open `Metrics`
+4. Enable `Web Analytics`
+
+Cloudflare will inject the beacon automatically on the next deployment.
+
+### Manual setup with a token
+
+If you prefer manual control, this project includes a token hook in [index.html](./index.html).
+
+Set the value of:
+
+```html
+<meta name="cf-web-analytics-token" content="">
+```
+
+to the token Cloudflare gives you from `Web Analytics → Add a site / Manage site`.
+
+Once the token is set and deployed, the page will load Cloudflare's beacon script automatically.
+
 ## Features
 
 - Live preview for background, foreground, bold text, cursor, selection, and link colors
