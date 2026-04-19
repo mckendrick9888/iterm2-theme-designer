@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iTerm2 Theme Designer</title>
+  <style>
+    :root {
+      --bg-app: #0f1115;
+      --panel: #171b22;
+      --panel-alt: #1e2530;
+      --line: #2d3644;
+      --text: #e6edf3;
+      --muted: #93a1b2;
+      --accent: #f97316;
+      --radius: 16px;
+      --shadow: 0 24px 50px rgba(0, 0, 0, 0.32);
+      --font-ui: "SF Pro Display", "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", "SFMono-Regular", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-ui);
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(249, 115, 22, 0.18), transparent 24%),
+        radial-gradient(circle at top right, rgba(56, 189, 248, 0.12), transparent 22%),
+        linear-gradient(180deg, #0b0e13 0%, #111723 100%);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(390px, 460px) 1fr;
+      gap: 24px;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    .panel {
+      background: rgba(23, 27, 34, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .controls-header {
+      padding: 24px 24px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button,
+    select {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: linear-gradient(135deg, #f97316, #fb923c);
+      color: #1b1109;
+      border-color: transparent;
+      font-weight: 700;
+    }
+
+    .controls-body {
+      padding: 16px 24px 24px;
+      overflow: auto;
+    }
+
+    .group {
+      margin-bottom: 28px;
+    }
+
+    .group h2 {
+      margin: 0 0 14px;
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #fbbf24;
+    }
+
+    .control-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .control-row:last-child {
+      border-bottom: none;
+    }
+
+    .control-meta {
+      min-width: 0;
+    }
+
+    .control-label {
+      display: block;
+      font-weight: 600;
+    }
+
+    .control-desc {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .color-input {
+      inline-size: 52px;
+      block-size: 36px;
+      padding: 0;
+      border: none;
+      border-radius: 10px;
+      overflow: hidden;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .hex-input {
+      width: 106px;
+      padding: 9px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(0, 0, 0, 0.16);
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .preview {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+    }
+
+    .preview-header {
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+    }
+
+    .preview-title {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .terminal-wrap {
+      padding: 24px;
+      overflow: auto;
+    }
+
+    .terminal {
+      min-height: 520px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 24px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .dot {
+      inline-size: 12px;
+      block-size: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .screen {
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 15px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 13px;
+    }
+
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0 24px 24px;
+    }
+
+    .swatch {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .swatch-color {
+      height: 44px;
+    }
+
+    .swatch-label {
+      padding: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .footer {
+      padding: 0 24px 24px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .selection {
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+
+    .cursor {
+      display: inline-block;
+      padding: 0 2px;
+      border-radius: 2px;
+      animation: blink 1.1s step-end infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0.22;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .terminal {
+        min-height: 420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <section class="panel controls">
+      <div class="controls-header">
+        <h1>iTerm2 Theme Designer</h1>
+        <p class="subtitle">Tune background, foreground, cursor, selection, and ANSI 16 colors with a live terminal preview, then export a ready-to-import `.itermcolors` file.</p>
+        <div class="toolbar">
+          <select id="presetSelect"></select>
+          <button id="resetButton">Reset preset</button>
+          <button id="exportButton" class="primary">Export .itermcolors</button>
+        </div>
+      </div>
+      <div class="controls-body" id="controls"></div>
+    </section>
+
+    <section class="panel preview">
+      <div class="preview-header">
+        <div class="preview-title">Live preview</div>
+        <div class="badge" id="themeNameBadge">Current theme</div>
+      </div>
+      <div class="terminal-wrap">
+        <div class="terminal" id="terminal">
+          <div class="terminal-bar">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="screen" id="screen"></div>
+        </div>
+      </div>
+      <div class="swatches" id="swatches"></div>
+      <div class="footer">Import the exported file in iTerm2 via Profiles → Colors → Color Presets → Import.</div>
+    </section>
+  </div>
+
+  <script>
+    const colorFields = [
+      { key: "Background Color", label: "Background", desc: "Main terminal background" },
+      { key: "Foreground Color", label: "Foreground", desc: "Default text color" },
+      { key: "Bold Color", label: "Bold text", desc: "Color used for bold output" },
+      { key: "Cursor Color", label: "Cursor", desc: "Cursor block color" },
+      { key: "Cursor Text Color", label: "Cursor text", desc: "Text color inside the cursor" },
+      { key: "Selection Color", label: "Selection background", desc: "Selected text background" },
+      { key: "Selected Text Color", label: "Selection text", desc: "Selected text foreground" },
+      { key: "Link Color", label: "Link", desc: "URL and link highlight color" },
+      { key: "Badge Color", label: "Badge", desc: "Optional profile badge color" }
+    ];
+
+    const ansiGroups = [
+      {
+        title: "ANSI base colors",
+        items: [
+          ["Ansi 0 Color", "Black"],
+          ["Ansi 1 Color", "Red"],
+          ["Ansi 2 Color", "Green"],
+          ["Ansi 3 Color", "Yellow"],
+          ["Ansi 4 Color", "Blue"],
+          ["Ansi 5 Color", "Magenta"],
+          ["Ansi 6 Color", "Cyan"],
+          ["Ansi 7 Color", "White"]
+        ]
+      },
+      {
+        title: "ANSI bright colors",
+        items: [
+          ["Ansi 8 Color", "Bright black"],
+          ["Ansi 9 Color", "Bright red"],
+          ["Ansi 10 Color", "Bright green"],
+          ["Ansi 11 Color", "Bright yellow"],
+          ["Ansi 12 Color", "Bright blue"],
+          ["Ansi 13 Color", "Bright magenta"],
+          ["Ansi 14 Color", "Bright cyan"],
+          ["Ansi 15 Color", "Bright white"]
+        ]
+      }
+    ];
+
+    const presets = {
+      "Amber Forge": {
+        "Background Color": "#14110f",
+        "Foreground Color": "#f5ead7",
+        "Bold Color": "#fff7eb",
+        "Cursor Color": "#ff9b52",
+        "Cursor Text Color": "#1b120d",
+        "Selection Color": "#4c3627",
+        "Selected Text Color": "#fff3dd",
+        "Link Color": "#7dd3fc",
+        "Badge Color": "#fb923c",
+        "Ansi 0 Color": "#1c1713",
+        "Ansi 1 Color": "#f97066",
+        "Ansi 2 Color": "#9bcf53",
+        "Ansi 3 Color": "#f6c453",
+        "Ansi 4 Color": "#68b6ff",
+        "Ansi 5 Color": "#d98cff",
+        "Ansi 6 Color": "#62d5c8",
+        "Ansi 7 Color": "#d7cab8",
+        "Ansi 8 Color": "#66594c",
+        "Ansi 9 Color": "#ff9f93",
+        "Ansi 10 Color": "#b7eb73",
+        "Ansi 11 Color": "#ffdb7d",
+        "Ansi 12 Color": "#8ec8ff",
+        "Ansi 13 Color": "#e9a9ff",
+        "Ansi 14 Color": "#8af0e4",
+        "Ansi 15 Color": "#fff4e2"
+      },
+      "Ocean Steel": {
+        "Background Color": "#0d1720",
+        "Foreground Color": "#d7e3ec",
+        "Bold Color": "#f6fbff",
+        "Cursor Color": "#89ddff",
+        "Cursor Text Color": "#091116",
+        "Selection Color": "#214359",
+        "Selected Text Color": "#f3fbff",
+        "Link Color": "#7dd3fc",
+        "Badge Color": "#38bdf8",
+        "Ansi 0 Color": "#111a22",
+        "Ansi 1 Color": "#ff7b72",
+        "Ansi 2 Color": "#6fdc8c",
+        "Ansi 3 Color": "#ffd166",
+        "Ansi 4 Color": "#63b3ed",
+        "Ansi 5 Color": "#c792ea",
+        "Ansi 6 Color": "#53d8fb",
+        "Ansi 7 Color": "#d0dce7",
+        "Ansi 8 Color": "#4f6576",
+        "Ansi 9 Color": "#ffa198",
+        "Ansi 10 Color": "#8ef0a7",
+        "Ansi 11 Color": "#ffe08a",
+        "Ansi 12 Color": "#8cc7ff",
+        "Ansi 13 Color": "#ddb7ff",
+        "Ansi 14 Color": "#88ecff",
+        "Ansi 15 Color": "#f3f9ff"
+      },
+      "Paper Lantern": {
+        "Background Color": "#f7f2e8",
+        "Foreground Color": "#3b3027",
+        "Bold Color": "#21160e",
+        "Cursor Color": "#c2410c",
+        "Cursor Text Color": "#fff7f1",
+        "Selection Color": "#f2d5b7",
+        "Selected Text Color": "#2b1f17",
+        "Link Color": "#0369a1",
+        "Badge Color": "#ea580c",
+        "Ansi 0 Color": "#43352b",
+        "Ansi 1 Color": "#c2410c",
+        "Ansi 2 Color": "#3f7d20",
+        "Ansi 3 Color": "#a16207",
+        "Ansi 4 Color": "#1d4ed8",
+        "Ansi 5 Color": "#9d174d",
+        "Ansi 6 Color": "#0f766e",
+        "Ansi 7 Color": "#ded2c1",
+        "Ansi 8 Color": "#8c7e73",
+        "Ansi 9 Color": "#ea580c",
+        "Ansi 10 Color": "#4d9a28",
+        "Ansi 11 Color": "#ca8a04",
+        "Ansi 12 Color": "#2563eb",
+        "Ansi 13 Color": "#be185d",
+        "Ansi 14 Color": "#0d9488",
+        "Ansi 15 Color": "#fffaf1"
+      }
+    };
+
+    let currentThemeName = Object.keys(presets)[0];
+    let state = structuredClone(presets[currentThemeName]);
+
+    const controlsEl = document.getElementById("controls");
+    const swatchesEl = document.getElementById("swatches");
+    const screenEl = document.getElementById("screen");
+    const terminalEl = document.getElementById("terminal");
+    const themeNameBadge = document.getElementById("themeNameBadge");
+    const presetSelect = document.getElementById("presetSelect");
+    const resetButton = document.getElementById("resetButton");
+    const exportButton = document.getElementById("exportButton");
+
+    function createControl(field) {
+      const row = document.createElement("div");
+      row.className = "control-row";
+
+      const meta = document.createElement("div");
+      meta.className = "control-meta";
+      meta.innerHTML = `
+        <span class="control-label">${field.label}</span>
+        <span class="control-desc">${field.desc}</span>
+      `;
+
+      const color = document.createElement("input");
+      color.type = "color";
+      color.className = "color-input";
+      color.value = state[field.key];
+
+      const hex = document.createElement("input");
+      hex.type = "text";
+      hex.className = "hex-input";
+      hex.value = state[field.key].toUpperCase();
+      hex.maxLength = 7;
+
+      color.addEventListener("input", () => {
+        state[field.key] = color.value;
+        hex.value = color.value.toUpperCase();
+        render();
+      });
+
+      hex.addEventListener("change", () => {
+        const value = normalizeHex(hex.value);
+        hex.value = value.toUpperCase();
+        color.value = value;
+        state[field.key] = value;
+        render();
+      });
+
+      row.append(meta, color, hex);
+      return row;
+    }
+
+    function normalizeHex(value) {
+      let v = String(value).trim().replace(/[^0-9a-fA-F#]/g, "");
+      if (!v.startsWith("#")) v = `#${v}`;
+      if (/^#[0-9a-fA-F]{3}$/.test(v)) {
+        v = "#" + [...v.slice(1)].map(ch => ch + ch).join("");
+      }
+      if (!/^#[0-9a-fA-F]{6}$/.test(v)) {
+        return "#000000";
+      }
+      return v.toLowerCase();
+    }
+
+    function buildControls() {
+      controlsEl.innerHTML = "";
+
+      const core = document.createElement("div");
+      core.className = "group";
+      core.innerHTML = "<h2>Core colors</h2>";
+      colorFields.forEach(field => core.appendChild(createControl(field)));
+      controlsEl.appendChild(core);
+
+      ansiGroups.forEach(group => {
+        const block = document.createElement("div");
+        block.className = "group";
+        block.innerHTML = `<h2>${group.title}</h2>`;
+        group.items.forEach(([key, label]) => {
+          block.appendChild(createControl({ key, label, desc: `Terminal ${label.toLowerCase()} channel` }));
+        });
+        controlsEl.appendChild(block);
+      });
+    }
+
+    function colorSpan(text, colorKey, extra = "") {
+      return `<span style="color:${state[colorKey]};${extra}">${text}</span>`;
+    }
+
+    function renderScreen() {
+      const selectionStyle = `background:${state["Selection Color"]};color:${state["Selected Text Color"]};`;
+      const cursorStyle = `background:${state["Cursor Color"]};color:${state["Cursor Text Color"]};`;
+      screenEl.innerHTML = [
+        colorSpan("Last login: Sun Apr 19 09:13:11 on ttys004", "Ansi 8 Color"),
+        "",
+        `${colorSpan("mckendrick@macbook", "Ansi 10 Color")} ${colorSpan("in", "Ansi 8 Color")} ${colorSpan("~/workspace/theme-lab", "Ansi 12 Color")}`,
+        `${colorSpan("$", "Ansi 11 Color")} ${colorSpan("git status", "Foreground Color")}`,
+        colorSpan("On branch main", "Ansi 2 Color"),
+        colorSpan("Your working tree is clean", "Ansi 10 Color"),
+        "",
+        `${colorSpan("$", "Ansi 11 Color")} ${colorSpan("ls --color", "Foreground Color")}`,
+        `${colorSpan("src", "Ansi 12 Color")}  ${colorSpan("themes", "Ansi 13 Color")}  ${colorSpan("scripts", "Ansi 14 Color")}  ${colorSpan("README.md", "Ansi 15 Color")}`,
+        "",
+        `${colorSpan("$", "Ansi 11 Color")} ${colorSpan("npm run build", "Foreground Color")}`,
+        colorSpan("✔ build completed in 842ms", "Ansi 10 Color"),
+        colorSpan("warning: optional dependency skipped", "Ansi 11 Color"),
+        colorSpan("error: sample failure message for red channel check", "Ansi 9 Color"),
+        "",
+        `${colorSpan("Selection demo:", "Bold Color", "font-weight:700;")} <span class="selection" style="${selectionStyle}">picked text contrast</span>`,
+        `${colorSpan("Link demo:", "Bold Color", "font-weight:700;")} <span style="color:${state["Link Color"]};text-decoration:underline;">https://example.com/theme</span>`,
+        `${colorSpan("Cursor demo:", "Bold Color", "font-weight:700;")} <span class="cursor" style="${cursorStyle}">█</span>`,
+      ].join("\n");
+    }
+
+    function renderSwatches() {
+      swatchesEl.innerHTML = "";
+      for (let i = 0; i < 16; i += 1) {
+        const key = `Ansi ${i} Color`;
+        const swatch = document.createElement("div");
+        swatch.className = "swatch";
+        swatch.innerHTML = `
+          <div class="swatch-color" style="background:${state[key]}"></div>
+          <div class="swatch-label">${i}: ${state[key].toUpperCase()}</div>
+        `;
+        swatchesEl.appendChild(swatch);
+      }
+    }
+
+    function renderContainer() {
+      terminalEl.style.background = state["Background Color"];
+      screenEl.style.color = state["Foreground Color"];
+      screenEl.style.fontWeight = 500;
+    }
+
+    function render() {
+      themeNameBadge.textContent = currentThemeName;
+      renderContainer();
+      renderScreen();
+      renderSwatches();
+    }
+
+    function toComponent(hex, idx) {
+      return parseInt(hex.slice(idx, idx + 2), 16) / 255;
+    }
+
+    function colorDict(hex) {
+      return {
+        "Red Component": toComponent(hex, 1),
+        "Green Component": toComponent(hex, 3),
+        "Blue Component": toComponent(hex, 5)
+      };
+    }
+
+    function toITermColors(themeName) {
+      const payload = {
+        "Profile Name": themeName
+      };
+      Object.entries(state).forEach(([key, value]) => {
+        payload[key] = colorDict(value);
+      });
+      return payload;
+    }
+
+    function plistValue(value, indent = "  ") {
+      if (typeof value === "number") {
+        return `${indent}<real>${value.toFixed(6)}</real>`;
+      }
+      if (typeof value === "string") {
+        return `${indent}<string>${value}</string>`;
+      }
+      if (value && typeof value === "object" && !Array.isArray(value)) {
+        const lines = [`${indent}<dict>`];
+        Object.entries(value).forEach(([key, nested]) => {
+          lines.push(`${indent}  <key>${key}</key>`);
+          lines.push(plistValue(nested, `${indent}  `));
+        });
+        lines.push(`${indent}</dict>`);
+        return lines.join("\n");
+      }
+      return `${indent}<string></string>`;
+    }
+
+    function exportTheme() {
+      const themeName = currentThemeName.replace(/\s+/g, "-").toLowerCase();
+      const plist = `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n${Object.entries(toITermColors(currentThemeName)).map(([key, value]) => `  <key>${key}</key>\n${plistValue(value, "  ")}`).join("\n")}\n</dict>\n</plist>\n`;
+
+      const blob = new Blob([plist], { type: "application/xml" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${themeName}.itermcolors`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function initPresets() {
+      Object.keys(presets).forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        presetSelect.appendChild(option);
+      });
+      presetSelect.value = currentThemeName;
+
+      presetSelect.addEventListener("change", () => {
+        currentThemeName = presetSelect.value;
+        state = structuredClone(presets[currentThemeName]);
+        buildControls();
+        render();
+      });
+
+      resetButton.addEventListener("click", () => {
+        state = structuredClone(presets[currentThemeName]);
+        buildControls();
+        render();
+      });
+
+      exportButton.addEventListener("click", exportTheme);
+    }
+
+    initPresets();
+    buildControls();
+    render();
+  </script>
+</body>
+</html>
