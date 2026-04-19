@@ -4,6 +4,8 @@ A lightweight browser-based tool for designing iTerm2 color themes with a live t
 
 No build step. No dependencies. Open the file and start tuning colors.
 
+Live URL: https://iterm2-theme-designer.mckendrick9888.workers.dev/
+
 ## Features
 
 - Live preview for background, foreground, bold text, cursor, selection, and link colors
@@ -48,6 +50,12 @@ https://<your-github-username>.github.io/iterm2-theme-designer/
 - Import the GitHub repository into Cloudflare Pages
 - Build command: leave empty
 - Output directory: `.`
+
+Current deployment:
+
+```text
+https://iterm2-theme-designer.mckendrick9888.workers.dev/
+```
 
 ### Vercel
 
