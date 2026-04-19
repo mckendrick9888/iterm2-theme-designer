@@ -6,6 +6,8 @@ No build step. No dependencies. Open the file and start tuning colors.
 
 Live URL: https://iterm2-theme-designer.mckendrick9888.workers.dev/
 
+![iTerm2 Theme Designer screenshot](./assets/iterm2-theme-designer.png)
+
 ## Features
 
 - Live preview for background, foreground, bold text, cursor, selection, and link colors
