@@ -23,6 +23,39 @@ On macOS:
 open index.html
 ```
 
+## Live Deployment
+
+This project can be deployed as a static site on any free static host, including:
+
+- GitHub Pages
+- Cloudflare Pages
+- Vercel
+
+Because the app is a single static HTML file, no build command is required.
+
+### GitHub Pages
+
+This repository includes a GitHub Actions workflow that deploys the site on every push to `main`.
+
+After enabling Pages in the repository settings, the site will be available at:
+
+```text
+https://<your-github-username>.github.io/iterm2-theme-designer/
+```
+
+### Cloudflare Pages
+
+- Import the GitHub repository into Cloudflare Pages
+- Build command: leave empty
+- Output directory: `.`
+
+### Vercel
+
+- Import the GitHub repository into Vercel
+- Framework preset: `Other`
+- Build command: leave empty
+- Output directory: `.`
+
 ## How To Use
 
 1. Open `index.html`.
