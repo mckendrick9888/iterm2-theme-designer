@@ -6,6 +6,8 @@ No build step. No dependencies. Open the file and start tuning colors.
 
 Live URL: https://iterm2-theme-designer.mckendrick9888.workers.dev/
 
+Cloudflare Web Analytics: enabled
+
 ![iTerm2 Theme Designer screenshot](./assets/iterm2-theme-designer.png)
 
 ## Analytics
@@ -35,7 +37,7 @@ If you prefer manual control, this project includes a token hook in [index.html]
 Set the value of:
 
 ```html
-<meta name="cf-web-analytics-token" content="">
+<meta name="cf-web-analytics-token" content="3fc821bf50f6489bbc558fad07a827e7">
 ```
 
 to the token Cloudflare gives you from `Web Analytics → Add a site / Manage site`.
